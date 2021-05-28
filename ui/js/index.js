@@ -1,47 +1,50 @@
 const webSocketOutput = document.querySelector('.output');
-const inputBtn = document.querySelector('.input-box');
+const inputBox = document.querySelector('.input-box');
 
-inputBtn.addEventListener('keyup', function(event) {
-    if (event.key === "Enter") {
-        const query = event.target.value;
-        event.target.value = '';
-        sendQuery(query);
-    }
+inputBox.addEventListener('keyup', function (event) {
+  if (event.key === 'Enter') handleEnterPressed(event);
 });
 
-let ws;
+let webSocket;
+const DEV_URL = 'ws://localhost:3000';
+const PROD_URL = 'wss://yuqiis.xyz';
 try {
-  // Local dev
-  if (['localhost', '127.0.0.1', ''].includes(location.hostname)) {
-    ws = new WebSocket(`ws://localhost:3000`);
-  } else {
-    ws = new WebSocket(`wss://jemisthe.best`);
-  }
-} catch(e) {
+  initWebSocket();
+} catch (e) {
   console.log('Web socket init error', e);
 }
 
+webSocket.onmessage = function ({ data }) {
+  try {
+    data = JSON.parse(data);
+    const { payload } = data;
+    prependResponseHtmlElement(payload);
+  } catch (e) {
+    console.log('Websocket error', e);
+  }
+};
 
-function sendQuery(query) {
-    ws.send(JSON.stringify({type: 'query', payload: query}))
+function handleEnterPressed(event) {
+  const query = event.target.value;
+  event.target.value = '';
+  sendQuery(query);
 }
 
-ws.onmessage = function({data}) {
-    const msg = document.createElement('div');
+function sendQuery(query) {
+  webSocket.send(JSON.stringify({ type: 'query', payload: query }));
+}
 
-    try {
-        data = JSON.parse(data);
-        const {type, payload} = data;
+function initWebSocket() {
+  if (isDevServer()) webSocket = new WebSocket(`ws://localhost:3000`);
+  else webSocket = new WebSocket(`wss://yuqiis.xyz`);
+}
 
-        switch(type) {
-            case 'ping':
-                // console.log('ping');
-                return;
-            default:
-                msg.innerHTML = payload;
-                webSocketOutput.prepend(msg);
-        }
-    } catch(e) {
-        console.log('Websocket error', e);
-    }
+function isDevServer() {
+  return ['localhost', '127.0.0.1', ''].includes(location.hostname);
+}
+
+function prependResponseHtmlElement(payload) {
+  const msg = document.createElement('div');
+  msg.innerHTML = payload;
+  webSocketOutput.prepend(msg);
 }
