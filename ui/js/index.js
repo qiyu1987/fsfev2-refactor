@@ -36,7 +36,7 @@ function sendQuery(query) {
 
 function initWebSocket() {
   if (isDevServer()) webSocket = new WebSocket(`ws://localhost:3000`);
-  else webSocket = new WebSocket(`wss://yuqiis.xyz`);
+  else webSocket = new WebSocket(`wss://test.yuqiis.xyz`);
 }
 
 function isDevServer() {
