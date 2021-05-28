@@ -12,3 +12,10 @@ The bot scream back what you type in ALL CAPS with a question mark.
 Jem did an amazing introductory course covering wide rang of topics. However I found the last bit of chat bot challenge quite difficult.
 
 I have also been reading recently [Clean Code](https://www.goodreads.com/book/show/3735293-clean-code) by Uncle Bob, so I decide to give the code a make over to understand it better. It mostly break down Jem's original code into functions with less than 2 level of indentation.
+
+## Run
+
+- clone or download repo
+- run `yarn install`
+- start dev server `yarn dev`
+- go to `http://localhost:3000/` in browser
